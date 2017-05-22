@@ -84,17 +84,17 @@ class APLGestureRecognizerViewController: UIViewController, UIGestureRecognizerD
         }
         
         // For illustrative purposes, set exclusive touch for the segmented control (see the ReadMe).
-        self.segmentedControl.exclusiveTouch = true
+        self.segmentedControl.isExclusiveTouch = true
     }
     
     
-    override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
+    override var supportedInterfaceOrientations : UIInterfaceOrientationMask {
         
-        return .All
+        return .all
     }
     
     
-    @IBAction func takeLeftSwipeRecognitionEnabledFrom(aSegmentedControl: UISegmentedControl) {
+    @IBAction func takeLeftSwipeRecognitionEnabledFrom(_ aSegmentedControl: UISegmentedControl) {
         
         /*
         Add or remove the left swipe recogniser to or from the view depending on the selection in the segmented control.
@@ -107,7 +107,7 @@ class APLGestureRecognizerViewController: UIViewController, UIGestureRecognizerD
     }
     
     
-    func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldReceiveTouch touch: UITouch) -> Bool {
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
         
         // Disallow recognition of tap gestures in the segmented control.
         if touch.view === self.segmentedControl && gestureRecognizer === self.tapRecognizer {
@@ -123,14 +123,14 @@ class APLGestureRecognizerViewController: UIViewController, UIGestureRecognizerD
     /*
     In response to a tap gesture, show the image view appropriately then make it fade out in place.
     */
-    @IBAction func showGestureForTapRecognizer(recognizer: UITapGestureRecognizer) {
+    @IBAction func showGestureForTapRecognizer(_ recognizer: UITapGestureRecognizer) {
         
-        let location = recognizer.locationInView(self.view)
+        let location = recognizer.location(in: self.view)
         self.drawImageForGestureRecognizer(recognizer, atPoint: location)
         
-        UIView.animateWithDuration(0.5) {
+        UIView.animate(withDuration: 0.5, animations: {
             self.imageView.alpha = 0.0
-        }
+        }) 
     }
     
     
@@ -138,43 +138,43 @@ class APLGestureRecognizerViewController: UIViewController, UIGestureRecognizerD
     In response to a swipe gesture, show the image view appropriately then move the image view in the direction of the swipe as it fades out.
     */
     //- (IBAction)showGestureForSwipeRecognizer:(UISwipeGestureRecognizer *)recognizer {
-    @IBAction func showGestureForSwipeRecognizer(recognizer: UISwipeGestureRecognizer) {
+    @IBAction func showGestureForSwipeRecognizer(_ recognizer: UISwipeGestureRecognizer) {
         
-        var location = recognizer.locationInView(self.view)
+        var location = recognizer.location(in: self.view)
         self.drawImageForGestureRecognizer(recognizer, atPoint: location)
         
-        if recognizer.direction == .Left {
+        if recognizer.direction == .left {
             location.x -= 220.0
         } else {
             location.x += 220.0
         }
         
-        UIView.animateWithDuration(0.5) {
+        UIView.animate(withDuration: 0.5, animations: {
             self.imageView.alpha = 0.0
             self.imageView.center = location
-        }
+        }) 
     }
     
     
     /*
     In response to a rotation gesture, show the image view at the rotation given by the recognizer. At the end of the gesture, make the image fade out in place while rotating back to horizontal.
     */
-    @IBAction func showGestureForRotationRecognizer(recognizer: UIRotationGestureRecognizer) {
+    @IBAction func showGestureForRotationRecognizer(_ recognizer: UIRotationGestureRecognizer) {
         
-        let location = recognizer.locationInView(self.view)
+        let location = recognizer.location(in: self.view)
         
-        let transform = CGAffineTransformMakeRotation(recognizer.rotation)
+        let transform = CGAffineTransform(rotationAngle: recognizer.rotation)
         self.imageView.transform = transform
         self.drawImageForGestureRecognizer(recognizer, atPoint: location)
         
         /*
         If the gesture has ended or is cancelled, begin the animation back to horizontal and fade out.
         */
-        if recognizer.state == .Ended || recognizer.state == .Cancelled {
-            UIView.animateWithDuration(0.5) {
+        if recognizer.state == .ended || recognizer.state == .cancelled {
+            UIView.animate(withDuration: 0.5, animations: {
                 self.imageView.alpha = 0.0
-                self.imageView.transform = CGAffineTransformIdentity
-            }
+                self.imageView.transform = CGAffineTransform.identity
+            }) 
         }
     }
     
@@ -185,15 +185,15 @@ class APLGestureRecognizerViewController: UIViewController, UIGestureRecognizerD
     /*
     Set the appropriate image for the image view for the given gesture recognizer, move the image view to the given point, then dispay the image view by setting its alpha to 1.0.
     */
-    private func drawImageForGestureRecognizer(recognizer: UIGestureRecognizer, atPoint centerPoint: CGPoint) {
+    private func drawImageForGestureRecognizer(_ recognizer: UIGestureRecognizer, atPoint centerPoint: CGPoint) {
         
         let imageName: String
         
-        if recognizer.dynamicType === UITapGestureRecognizer.self {
+        if type(of: recognizer) === UITapGestureRecognizer.self {
             imageName = "tap.png"
-        } else if recognizer.dynamicType === UIRotationGestureRecognizer.self {
+        } else if type(of: recognizer) === UIRotationGestureRecognizer.self {
             imageName = "rotation.png"
-        } else if recognizer.dynamicType === UISwipeGestureRecognizer.self {
+        } else if type(of: recognizer) === UISwipeGestureRecognizer.self {
             imageName = "swipe.png"
         } else {
             fatalError()
