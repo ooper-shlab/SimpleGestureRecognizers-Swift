@@ -2,7 +2,7 @@
 //  APLGestureRecognizerViewController.swift
 //  SimpleGestureRecognizers
 //
-//  Created by 開発 on 2016/1/2.
+//  Translated by OOPer in cooperation with shlab.jp, on 2016/1/2.
 //
 //
 //
